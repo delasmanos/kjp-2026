@@ -1,0 +1,27 @@
+---
+import { getCollection } from "astro:content";
+import  {tagCountList} from "@/lib/utils";
+import PageLayout from "@/layouts/PageLayout.astro";
+const allPosts = await getCollection("posts");
+const tags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
+
+const mostFrequentTagValue = tagCountList(allPosts);
+console.log(mostFrequentTagValue)
+
+const pageTitle = "Tag Index";
+---
+<PageLayout title={pageTitle}>
+  <h1 class="text-4xl font-bold tracking-tight mb-8">{pageTitle}</h1>
+<ul>
+
+  {tags.length === 0 && <p>No tags found.</p>}
+  <ul class="max-w-md space-y-1 text-body list-disc list-inside">
+  <!-- {mostFrequentTagValue?.length} -->
+  {mostFrequentTagValue ? Array.from(mostFrequentTagValue[2]).map(([tag,count]) => (
+    <li class="m-2">
+      <a class='bg-brand-softer hover:bg-brand-soft border border-brand-subtle text-fg-brand-strong font-medium px-1.5 py-0.5 rounded text-xl' href={`/tags/${tag}/`}>{tag}: {count} Post{count>1 ? 's' : ''}</a>
+    </li>
+  )): 'NÖ'}
+</ul>
+{mostFrequentTagValue ? <p>Most frequent tag: {mostFrequentTagValue[0]} {mostFrequentTagValue[1]} </p> : ''}
+</PageLayout>

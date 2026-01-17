@@ -1,0 +1,68 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection } from 'astro:content';
+import PageLayout from '@/layouts/PageLayout.astro';
+import { Button } from '@/components/ui/button';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = (await getCollection('posts')).sort(
+	(a, b) => b.data.publishedDate.valueOf() - a.data.publishedDate.valueOf()
+  );
+  return paginate(posts, { pageSize: 6 });
+}) satisfies GetStaticPaths;
+const { page } = Astro.props;
+---
+
+<PageLayout title={`Journal - Page ${page.currentPage}`}>
+  <div class="container mx-auto px-4 py-12 md:py-24 max-w-4xl">
+    <h1 class="text-4xl font-extrabold tracking-tight mb-16">Journal</h1>
+    
+    <div class="space-y-16 mb-24">
+         {page.data.length === 0 && (
+             <p>No posts found.</p>
+        )}
+      {page.data.map((post) => (
+        <article class="group">
+             <a href={`/posts/${post.id}`} class="block space-y-4">
+                 <div class="flex flex-col md:flex-row md:items-baseline justify-between gap-2">
+                     <div class="flex flex-col ">
+                        <h2 class="text-3xl font-bold group-hover:underline underline-offset-4 decoration-1">{post.data.title}</h2>
+                        <div>Tags: <sapn class="p-2 italic">{post.data.tags.join(", ")}</span></div>
+                     </div>
+                     <time datetime={post.data.publishedDate.toISOString()} class="text-muted-foreground font-mono text-sm shrink-0">
+                         {post.data.publishedDate.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
+                     </time>
+                 </div>
+                 <p class="text-lg text-muted-foreground line-clamp-2 md:w-3/4">
+                     {/* We could add an excerpt field to the schema, or just let them click through. 
+                         For now, assuming title is enough or we grab the first paragraph if we processed content.
+                         Just showing a visual placeholder description or using the title again is redundant. 
+                         Let's just show a "Read more" indicator.
+                     */}
+                     Read entry ->
+                 </p>
+             </a>
+        </article>
+      ))}
+    </div>
+
+    {/* Pagination */}
+     <div class="flex justify-between items-center border-t border-border pt-8">
+        {page.url.prev ? (
+             <Button variant="ghost" asChild>
+                <a href={page.url.prev}>Previous</a>
+             </Button>
+        ) : <div />}
+        
+        <span class="text-muted-foreground text-sm">
+             Page {page.currentPage} of {page.lastPage}
+        </span>
+
+        {page.url.next ? (
+             <Button variant="ghost" asChild>
+                <a href={page.url.next}>Next</a>
+             </Button>
+        ) : <div />}
+     </div>
+  </div>
+</PageLayout>

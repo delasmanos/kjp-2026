@@ -1,0 +1,65 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '@/layouts/PageLayout.astro';
+import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import type { GetStaticPaths } from 'astro';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const projects = await getCollection('projects');
+  // Sort by date or relevance if there was a date field, defaulting to title or manual order
+  // For now just passing them all.
+  return paginate(projects, { pageSize: 6 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+---
+
+<PageLayout title={`Projects - Page ${page.currentPage}`}>
+  <div class="container mx-auto px-4 py-12 md:py-24">
+    <h1 class="text-4xl font-extrabold tracking-tight mb-12">Projects</h1>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        {page.data.length === 0 && (
+             <p>No projects found.</p>
+        )}
+      {page.data.map((project) => (
+        <Card className="flex flex-col h-full rounded-none border-t border-b border-l-0 border-r-0 border-border bg-transparent shadow-none hover:bg-secondary/20 transition-colors">
+            {project.data.image && (
+                 <div class="aspect-video w-full overflow-hidden bg-secondary">
+                     <img src={project.data.image} alt={project.data.title} class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
+                 </div>
+            )}
+           <CardHeader>
+                <CardTitle className="text-2xl">{project.data.title}</CardTitle>
+                <CardDescription className="text-base line-clamp-3">{project.data.description}</CardDescription>
+            </CardHeader>
+          <CardFooter className="mt-auto">
+             <Button variant="link" className="px-0 underline underline-offset-4" asChild>
+                <a href={project.data.link} target="_blank">View Project -></a>
+             </Button>
+          </CardFooter>
+        </Card>
+      ))}
+    </div>
+
+    {/* Pagination */}
+     <div class="flex justify-between items-center border-t border-border pt-8">
+        {page.url.prev ? (
+             <Button variant="ghost" asChild>
+                <a href={page.url.prev}>Previous</a>
+             </Button>
+        ) : <div />}
+        
+        <span class="text-muted-foreground text-sm">
+             Page {page.currentPage} of {page.lastPage}
+        </span>
+
+        {page.url.next ? (
+             <Button variant="ghost" asChild>
+                <a href={page.url.next}>Next</a>
+             </Button>
+        ) : <div />}
+     </div>
+  </div>
+</PageLayout>

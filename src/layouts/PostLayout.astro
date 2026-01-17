@@ -1,0 +1,37 @@
+---
+import PageLayout from './PageLayout.astro';
+import { Button } from '@/components/ui/button';
+
+interface Props {
+  title: string;
+  publishedDate?: Date;
+}
+
+const { title, publishedDate } = Astro.props;
+---
+
+<PageLayout title={title}>
+  <article class="container mx-auto px-4 py-12 md:py-24 lg:py-32 max-w-4xl">
+    <header class="mb-12 text-center">
+        {publishedDate && (
+            <time datetime={publishedDate.toISOString()} class="text-sm text-muted-foreground uppercase tracking-wider mb-4 block">
+                {publishedDate.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
+            </time>
+        )}
+      <h1 class="text-4xl font-extrabold tracking-tight lg:text-5xl xl:text-6xl mb-6">
+        {title}
+      </h1>
+      <div class="h-1 w-24 bg-primary mx-auto my-8"></div>
+    </header>
+    
+    <div class="prose prose-lg dark:prose-invert mx-auto">
+      <slot />
+    </div>
+
+    <div class="mt-16 flex justify-center border-t pt-12">
+      <Button variant="ghost" asChild>
+        <a href="/posts">← Back to Posts</a>
+      </Button>
+    </div>
+  </article>
+</PageLayout>

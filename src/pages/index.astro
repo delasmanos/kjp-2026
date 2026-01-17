@@ -1,0 +1,32 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import { Button } from '@/components/ui/button';
+import { getCollection, getEntry, render } from 'astro:content';
+
+const homepage = await getEntry('homepage', 'index');
+
+if(!homepage) {
+    throw new Error('Homepage not found');
+}	
+
+const { headline, subheadline } = homepage.data;
+const { Content } = await render ( homepage);
+---
+
+<PageLayout title="Kinder und jugenpsychotherapie Mahlsdorf Berlin">
+	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Massive Hero Section */}
+		<section class="min-h-[80vh] flex flex-col justify-center pt-24 pb-12">
+            <div class="animate-reveal">
+    			<h1 class="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter leading-[0.9] mb-8 text-primary font-pacifico">
+    				{headline}
+    			</h1>
+            </div>
+		</section>
+
+        
+        <div class="prose">
+            <Content />
+        </div>
+	</div>
+</PageLayout>

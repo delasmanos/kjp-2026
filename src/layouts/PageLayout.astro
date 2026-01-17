@@ -1,0 +1,48 @@
+---
+import Layout from './Layout.astro';
+import { Button } from '@/components/ui/button';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = "Developer Portfolio", description } = Astro.props;
+---
+
+<Layout title={title} description={description}>
+  <div class="flex min-h-screen flex-col">
+    <header class="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-backdrop-filter:bg-stone-100/60">
+    <!-- <header class="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"> -->
+      <div class="container flex h-14 items-center justify-between mx-auto px-4 ">
+        <div class="mr-4 flex">
+          <a class="mr-6 flex items-center space-x-2 font-xl font-bold font-pacifico" href="/">
+             delasmanos
+          </a>
+          <nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
+            <a class="transition-colors hover:text-foreground/80 text-foreground/60" href="/#projects">Projects</a>
+            <a class="transition-colors hover:text-foreground/80 text-foreground/60" href="/posts">Blog</a>
+            <a class="transition-colors hover:text-foreground/80 text-foreground/60" href="/about">About</a>
+          </nav>
+        </div>
+        <div class="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+           <Button variant="ghost" asChild>
+                <a href="/keystatic">Admin</a>
+           </Button>
+        </div>
+      </div>
+    </header>
+    <main class="flex-1">
+      <slot />
+    </main>
+    <footer class="border-t py-6 md:px-8 md:py-0">
+      <div class="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row mx-auto px-4">
+        <p class="text-center text-sm leading-loose text-muted-foreground md:text-left">
+          Built with <a href="https://astro.build" target="_blank" rel="noreferrer" class="font-medium underline underline-offset-4">Astro</a>, 
+          <a href="https://ui.shadcn.com" target="_blank" rel="noreferrer" class="font-medium underline underline-offset-4">shadcn/ui</a>, and 
+          <a href="https://keystatic.com" target="_blank" rel="noreferrer" class="font-medium underline underline-offset-4">Keystatic</a>.
+        </p>
+      </div>
+    </footer>
+  </div>
+</Layout>
