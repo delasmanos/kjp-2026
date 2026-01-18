@@ -8,6 +8,8 @@ import sitemap from '@astrojs/sitemap';
 import markdoc from '@astrojs/markdoc';
 // https://astro.build/config
 export default defineConfig({
+    site: import.meta.env.DEV ? 'http://127.0.0.1:4321' : 'https://kjp-struth.de',
+    // base: "/",
     adapter: vercel(),
     integrations: [
         react(),
